@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureVote - Live Ballot Election</title>
+
+   <style>
+    
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    background:#f1f5f9;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Arial, sans-serif;
+}
+
+.logo-wrapper h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            letter-spacing: 0.05em;
+            color: white;
+        }
+
+.site-wrapper{
+    width:100%;
+    max-width:1200px;
+    min-height:90vh;
+    background:#fff;
+    border-radius:12px;
+    overflow:hidden;
+    box-shadow:0 10px 25px rgba(0,0,0,.1);
+}
+
+.navbar{
+    background:#0f172a;
+    padding:15px 25px;
+}
+
+.nav-container{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.nav-brand{
+    color:white;
+    text-decoration:none;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.nav-links a{
+    color:#cbd5e1;
+    text-decoration:none;
+    margin-left:20px;
+}
+
+.nav-links a:hover{
+    color:white;
+}
+
+.main-container{
+    padding:30px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:white;
+    border:1px solid #e5e7eb;
+    border-radius:10px;
+    padding:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    transition:0.3s ease;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 6px 18px rgba(0,0,0,.12);
+}
+
+/* ===== ADDED STYLES ===== */
+
+.form-group{
+    margin-top:15px;
+    margin-bottom:15px;
+}
+
+.form-control{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+    outline:none;
+    font-size:14px;
+    transition:0.2s ease;
+}
+
+.form-control:focus{
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,0.15);
+}
+
+.btn{
+    display:inline-block;
+    padding:10px 16px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:600;
+    font-size:14px;
+    transition:0.3s ease;
+}
+
+.btn-primary{
+    background:#2563eb;
+    color:white;
+}
+
+.btn-primary:hover{
+    background:#1d4ed8;
+}
+
+.btn-primary:active{
+    transform:scale(0.97);
+}
+
+button{
+    cursor:pointer;
+}
+
+#auth-status{
+    font-weight:500;
+}
+
+/* Better candidate layout fix */
+.card button{
+    width:100%;
+}
+
+@media(max-width:768px){
+    body{
+        align-items:flex-start;
+    }
+
+    .site-wrapper{
+        min-height:100vh;
+        border-radius:0;
+    }
+
+    .nav-container{
+        flex-direction:column;
+        gap:10px;
+    }
+}
+</style>
+   
+</head>
+<body>
+<div class="site-wrapper">
+   <nav class="navbar">
+            <div class="nav-container">
+                
+                <div class="logo-wrapper">
+                    
+                    <h1>BTSS VOTING SYSTEM</h1>
+                </div>
+                
+                <a href="home.html" class="nav-brand"></a>
+                <div class="nav-links">
+                    <a href="home.html" class="active">Home</a>
+                    <a href="advertiser.html">Apply Campaign</a>
+                    <a href="election.html">Vote Now</a>
+                    <a href="status.html">Election Status</a>
+                    <a href="helpcenter.html">Helpcenter</a>
+                </div>
+            </div>
+        </nav>
+
+    <div class="main-container">
+        <h2 style="text-align: center; color: #1d4ed8;">Cast Your Ballot</h2>
+        
+        <div class="card" id="voter-auth-box" style="max-width: 450px; margin: 0 auto 2rem auto;">
+            <h3 style="margin-top:0;">Student Sdms Code</h3>
+            <div class="form-group">
+                <input type="text" id="voter-code-input" placeholder="Enter Student Registration Code" class="form-control">
+            </div>
+            <button onclick="lockVoterCode()" class="btn btn-primary">Confirm Identity</button>
+            <p id="auth-status" style="text-align:center; font-size:0.85rem; color:#6b7280; margin-top:0.5rem;"></p>
+        </div>
+
+        <div id="candidates-grid" class="grid" style="display: none;">
+            <!-- Dynamic Injection JavaScript Cards Target Container -->
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "http://localhost:3000/api/add";
+        let activeVoterCode = "";
+
+        function lockVoterCode() {
+            const codeInput = document.getElementById('voter-code-input').value.trim();
+            if(!codeInput) return alert("Please type your identification token first.");
+            activeVoterCode = codeInput;
+
+            document.getElementById('candidates-grid').style.display = 'grid';
+            fetchCandidates();
+        }
+
+        async function fetchCandidates() {
+            try {
+                const response = await fetch(`${API_BASE}/candidates`);
+                const candidates = await response.json();
+                const grid = document.getElementById('candidates-grid');
+                grid.innerHTML = '';
+
+                if(candidates.length === 0) {
+                    grid.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#6b7280;">No candidates are active on the ballot roster.</p>`;
+                    return;
+                }
+
+                candidates.forEach(c => {
+                    grid.innerHTML += `
+                        <div class="card" style="display:flex; flex-direction:column; justify-content:between; text-align:center;">
+                            <div style="width:70px; height:70px; background:#e5e7eb; border-radius:50%; margin:0 auto 1rem auto; overflow:hidden; display:flex; align-items:center; justify-content:center;">
+                                ${c.profile ? `<img src="${c.profile}" style="width:100%; height:100%; object-cover:fit;"/>` : '👤'}
+                            </div>
+                            <h3 style="margin:0 0 0.25rem 0;">${c.candidate_name}</h3>
+                            <p style="color:#2563eb; font-weight:700; text-transform:uppercase; font-size:0.85rem; margin:0;">${c.position}</p>
+                            <p style="color:#6b7280; font-size:0.75rem; margin:0.25rem 0 1.5rem 0;">Trade: ${c.trade}</p>
+                            <button onclick="castVote('${c.candidate_name}', '${c.position}', '${c.trade}')" class="btn btn-primary" style="margin-top:auto;">Vote Candidate</button>
+                        </div>
+                    `;
+                });
+            } catch (err) { console.error(err); }
+        }
+
+        async function castVote(candidateName, position, trade) {
+            if (!activeVoterCode) return alert("Verify authentication credentials above.");
+            
+            const payload = {
+                voter_code: activeVoterCode,
+                candidate_voted: candidateName,
+                position: position,
+                candidate_trade: trade
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/election`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(`🎉 Success: Your vote for ${candidateName} has been recorded!`);
+                } else if (response.status === 403) {
+                    alert(`❌ Access Denied: ${data.message}`);
+                } else {
+                    alert(`Error: ${data.message || 'Submission processing issue.'}`);
+                }
+            } catch (error) { 
+                alert("Server backend operational link connection error."); 
+            }
+        }
+
+    </script>
+</div>
+</body>
+</html>

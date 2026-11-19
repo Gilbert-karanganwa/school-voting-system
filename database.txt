@@ -1,0 +1,56 @@
+//creation of database
+create database school-voting-system;
+use school-voting-system;
+
+//creation of table
+
+//users table
+
+create table users{
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_code INT(12) PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+}
+
+//candidate table
+
+create table candidates{
+    fullname varchar(255),
+    position varchar(255),
+    trade varchar(255),
+    profile varchar(255)
+}
+
+//advertising table
+
+create table advertised{
+    candidate_name varchar(255),
+    position varchar(255),
+    candidate_trade varchar(255),
+    student_code varchar(255),
+    status varchar(255)
+}
+
+//winners table
+
+create table winners{
+    fullname varchar(255),
+    position varchar(255),
+    score int(11),
+    total-voter int(11),
+    profile varchar(255)
+}
+//admin table
+ create table admin(
+    admin_name varchar(255),
+    password varchar(255),
+    email varchar(255),
+    profile varchar(255)
+ )
+ //votee table
+  create table election(
+    voter_code varchar(255),
+    candidate_voted varchar(255),
+    position varchar(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP varchar(255)
+ )

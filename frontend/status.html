@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulinga tss voting system - Election Status</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        html,body{
+            width:100%;
+            min-height:100vh;
+            background:#f1f5f9;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        /* The Main Wrapper filling the center area */
+        .site-wrapper{
+            width:100%;
+            max-width:1200px;
+            min-height:90vh;
+            background:#fff;
+            border-radius:12px;
+            overflow:hidden;
+            box-shadow:0 10px 25px rgba(0,0,0,.1);
+            display:flex;
+            flex-direction:column;
+            margin:20px;
+        }
+
+        .navbar{
+            background:#0f172a;
+            padding:15px 30px;
+        }
+
+        .nav-container{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            flex-wrap:wrap;
+            gap:15px;
+        }
+
+        .nav-container h1{
+            color:white;
+            font-size:22px;
+        }
+
+        .nav-links{
+            display:flex;
+            gap:20px;
+            flex-wrap:wrap;
+        }
+
+        .nav-links a{
+            color:#cbd5e1;
+            text-decoration:none;
+            transition:.3s;
+        }
+
+        .nav-links a:hover{
+            color:white;
+        }
+
+        .main-container{
+            flex:1;
+            padding:30px;
+            background:#fafafa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Pushes content to vertical center of the panel */
+        }
+
+        .page-title{
+            text-align:center;
+            color:#1d4ed8;
+            margin-bottom:25px;
+        }
+
+        .card{
+            background:white;
+            border:1px solid #e2e8f0;
+            border-radius:10px;
+            padding:25px;
+            box-shadow:0 4px 6px rgba(0,0,0,.05);
+            width: 100%;
+        }
+
+        .footer{
+            background:#0f172a;
+            color:#94a3b8;
+            text-align:center;
+            padding:20px;
+        }
+
+        /* Responsive Breakpoints for Smaller Devices */
+        @media(max-width:768px){
+            html,body{
+                align-items:flex-start;
+            }
+
+            .site-wrapper{
+                margin:0;
+                border-radius:0;
+                min-height:100vh;
+            }
+
+            .nav-container{
+                flex-direction:column;
+            }
+
+            .nav-links{
+                flex-direction:column;
+                text-align:center;
+            }
+
+            .main-container{
+                padding:15px;
+                justify-content: flex-start; /* Resets to normal flow on mobile views */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="site-wrapper">
+
+    <!-- Navigation Bar Components Layout -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1>BTSS VOTING SYSTEM</h1>
+            <div class="nav-links">
+                <a href="home.html">Home</a>
+                <a href="advertiser.html">Apply Campaign</a>
+                <a href="election.html">Vote Now</a>
+                <a href="status.html">Election Status</a>
+                <a href="helpcenter.html">Helpcenter</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Central Workspace Form Card Grid Container -->
+    <main class="main-container">
+
+        <h2 class="page-title">Election Status Workspace</h2>
+
+        <!-- Live Stats Summary Row -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:16px; margin-bottom:24px;">
+            <div class="card" style="text-align:center; padding:20px;">
+                <div style="font-size:2rem; font-weight:bold; color:#2563eb;" id="stat-votes">—</div>
+                <div style="font-size:0.8rem; color:#64748b; text-transform:uppercase; margin-top:4px;">Total Votes Cast</div>
+            </div>
+            <div class="card" style="text-align:center; padding:20px;">
+                <div style="font-size:2rem; font-weight:bold; color:#16a34a;" id="stat-candidates">—</div>
+                <div style="font-size:0.8rem; color:#64748b; text-transform:uppercase; margin-top:4px;">Active Candidates</div>
+            </div>
+            <div class="card" style="text-align:center; padding:20px;">
+                <div style="font-size:2rem; font-weight:bold; color:#d97706;" id="stat-positions">—</div>
+                <div style="font-size:0.8rem; color:#64748b; text-transform:uppercase; margin-top:4px;">Positions Contested</div>
+            </div>
+            <div class="card" style="text-align:center; padding:20px;">
+                <div style="font-size:1.3rem; font-weight:bold; color:#0f172a;">🟢 Live</div>
+                <div style="font-size:0.8rem; color:#64748b; text-transform:uppercase; margin-top:4px;">Election Status</div>
+            </div>
+        </div>
+
+        <!-- Results by Position Table -->
+        <div class="card" style="margin-bottom:20px;">
+            <h3 style="margin-top:0; color:#0f172a; border-bottom:2px solid #2563eb; padding-bottom:8px;">📊 Live Results by Position</h3>
+            <div id="results-container">
+                <p style="text-align:center; color:#64748b; padding:20px 0;">Loading results...</p>
+            </div>
+        </div>
+
+    </main>
+
+<!-- Complete Footer Layout Section -->
+    <footer class="footer">
+        <p>© 2026 BTSS Voting System. All Rights Reserved.</p>
+    </footer>
+
+</div>
+
+<script>
+const API_BASE = "http://localhost:3000/api/add";
+
+async function loadElectionStatus() {
+    try {
+        // Fetch candidates
+        const candRes = await fetch(`${API_BASE}/candidates`);
+        const candidates = await candRes.json();
+
+        // Fetch votes/election data
+        const voteRes = await fetch(`${API_BASE}/election`);
+        const votes = await voteRes.json();
+
+        // Summary stats
+        document.getElementById('stat-votes').textContent = votes.length || 0;
+        document.getElementById('stat-candidates').textContent = candidates.length || 0;
+
+        // Group candidates by position
+        const positions = {};
+        candidates.forEach(c => {
+            if (!positions[c.position]) positions[c.position] = [];
+            positions[c.position].push({ name: c.candidate_name, trade: c.trade, votes: 0 });
+        });
+
+        // Count votes per candidate
+        votes.forEach(v => {
+            const pos = v.position;
+            if (positions[pos]) {
+                const cand = positions[pos].find(c => c.name === v.candidate_voted);
+                if (cand) cand.votes++;
+            }
+        });
+
+        const positionCount = Object.keys(positions).length;
+        document.getElementById('stat-positions').textContent = positionCount;
+
+        // Render results
+        const container = document.getElementById('results-container');
+        if (positionCount === 0) {
+            container.innerHTML = `<p style="text-align:center; color:#64748b; padding:20px 0;">No candidates registered yet.</p>`;
+            return;
+        }
+
+        let html = '';
+        for (const [position, cands] of Object.entries(positions)) {
+            // Sort by votes descending
+            cands.sort((a, b) => b.votes - a.votes);
+            const totalPosVotes = cands.reduce((s, c) => s + c.votes, 0);
+
+            html += `
+                <div style="margin-bottom:24px;">
+                    <h4 style="color:#1d4ed8; margin-bottom:12px; font-size:1rem; text-transform:uppercase; letter-spacing:0.05em;">
+                        🏆 ${position}
+                    </h4>
+                    <table style="width:100%; border-collapse:collapse;">
+                        <thead>
+                            <tr style="background:#f8fafc;">
+                                <th style="text-align:left; padding:10px 12px; border:1px solid #e5e7eb; font-size:0.85rem; color:#374151;">#</th>
+                                <th style="text-align:left; padding:10px 12px; border:1px solid #e5e7eb; font-size:0.85rem; color:#374151;">Candidate</th>
+                                <th style="text-align:left; padding:10px 12px; border:1px solid #e5e7eb; font-size:0.85rem; color:#374151;">Trade</th>
+                                <th style="text-align:left; padding:10px 12px; border:1px solid #e5e7eb; font-size:0.85rem; color:#374151;">Votes</th>
+                                <th style="text-align:left; padding:10px 12px; border:1px solid #e5e7eb; font-size:0.85rem; color:#374151;">Progress</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${cands.map((c, i) => {
+                                const pct = totalPosVotes > 0 ? Math.round((c.votes / totalPosVotes) * 100) : 0;
+                                const isLeading = i === 0 && c.votes > 0;
+                                return `
+                                <tr style="${isLeading ? 'background:#f0fdf4;' : ''}">
+                                    <td style="padding:10px 12px; border:1px solid #e5e7eb; font-weight:bold; color:${isLeading ? '#16a34a' : '#64748b'};">
+                                        ${isLeading ? '🥇' : i + 1}
+                                    </td>
+                                    <td style="padding:10px 12px; border:1px solid #e5e7eb; font-weight:600;">${c.name}</td>
+                                    <td style="padding:10px 12px; border:1px solid #e5e7eb; color:#64748b; font-size:0.875rem;">${c.trade}</td>
+                                    <td style="padding:10px 12px; border:1px solid #e5e7eb; font-weight:bold; color:#0f172a;">${c.votes}</td>
+                                    <td style="padding:10px 12px; border:1px solid #e5e7eb; min-width:120px;">
+                                        <div style="background:#e5e7eb; border-radius:999px; height:8px; overflow:hidden;">
+                                            <div style="background:${isLeading ? '#16a34a' : '#2563eb'}; height:100%; width:${pct}%; border-radius:999px; transition:width 0.5s;"></div>
+                                        </div>
+                                        <span style="font-size:0.75rem; color:#64748b;">${pct}%</span>
+                                    </td>
+                                </tr>`;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+        document.getElementById('results-container').innerHTML = `
+            <p style="text-align:center; color:#dc2626; padding:20px 0;">
+                ⚠️ Could not load election data. Ensure the server is running.
+            </p>`;
+        document.getElementById('stat-votes').textContent = '—';
+        document.getElementById('stat-candidates').textContent = '—';
+        document.getElementById('stat-positions').textContent = '—';
+    }
+}
+
+loadElectionStatus();
+// Auto-refresh every 30 seconds
+setInterval(loadElectionStatus, 30000);
+</script>
+
+</body>
+</html>

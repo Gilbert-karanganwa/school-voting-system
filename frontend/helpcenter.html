@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulinga tss voting system</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* Forces full view coverage and handles dead-center positioning */
+        html, body {
+            width: 100%;
+            min-height: 100vh;
+            background: #f1f5f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* The Main Wrapper filling the center area */
+        .site-wrapper {
+            width: 100%;
+            max-width: 1200px;
+            min-height: 90vh;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,.1);
+            display: flex;
+            flex-direction: column;
+            margin: 20px;
+        }
+
+        /* Navigation Bar Components Layout */
+        .navbar {
+            background: #0f172a;
+            padding: 15px 30px;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .nav-container h1 {
+            color: white;
+            font-size: 22px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            transition: .3s;
+        }
+
+        .nav-links a:hover {
+            color: white;
+        }
+
+        /* Central Workspace Area configured for vertical centering */
+        .main-container {
+            flex: 1;
+            padding: 30px;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            justify-content: center; /* Vertically centers elements within main block */
+        }
+
+        /* Inner card display format */
+        .card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,.05);
+            width: 100%;
+        }
+
+        /* Complete Footer Layout Section */
+        .footer {
+            background: #0f172a;
+            color: #94a3b8;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Mobile Layout Breakpoints */
+        @media(max-width: 768px) {
+            html, body {
+                align-items: flex-start;
+            }
+
+            .site-wrapper {
+                margin: 0;
+                border-radius: 0;
+                min-height: 100vh;
+            }
+
+            .nav-container {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .main-container {
+                padding: 15px;
+                justify-content: flex-start; /* Normal top-down alignment for tiny screens */
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="site-wrapper">
+
+    <!-- Navbar Container Elements -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1>BTSS VOTING SYSTEM</h1>
+            <a href="home.html" class="nav-brand"></a>
+            <div class="nav-links">
+                <a href="home.html">Home</a>
+                <a href="advertiser.html">Apply Campaign</a>
+                <a href="election.html">Vote Now</a>
+                <a href="status.html">Election Status</a>
+                <a href="helpcenter.html">Helpcenter</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Central Alignment Area -->
+    <main class="main-container">
+        
+        <!-- Centered Card Box Interface Panel -->
+        <div class="card" style="max-width: 720px; margin: 0 auto;">
+            <h2 style="text-align: center; color: #1d4ed8; margin-bottom: 5px;">BTSS Help Center</h2>
+            <p style="text-align:center; color:#64748b; margin-bottom:24px; font-size:0.9rem;">Find answers to common questions about the voting system</p>
+
+            <!-- FAQ Accordion -->
+            <div id="faq-list">
+
+                <div class="faq-item" style="border:1px solid #e2e8f0; border-radius:8px; margin-bottom:10px; overflow:hidden;">
+                    <button onclick="toggleFaq(this)" style="width:100%; text-align:left; padding:14px 16px; background:#f8fafc; border:none; cursor:pointer; font-weight:600; font-size:0.95rem; color:#0f172a; display:flex; justify-content:space-between; align-items:center;">
+                        How do I cast my vote? <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-body" style="display:none; padding:14px 16px; color:#475569; line-height:1.6; font-size:0.9rem;">
+                        Go to the <strong>Vote Now</strong> page. Enter your Student Registration Code and click <em>Confirm Verification Identity</em>. Once verified, you will see all active candidates. Click <strong>Vote Candidate</strong> on your preferred candidate for each position.
+                    </div>
+                </div>
+
+                <div class="faq-item" style="border:1px solid #e2e8f0; border-radius:8px; margin-bottom:10px; overflow:hidden;">
+                    <button onclick="toggleFaq(this)" style="width:100%; text-align:left; padding:14px 16px; background:#f8fafc; border:none; cursor:pointer; font-weight:600; font-size:0.95rem; color:#0f172a; display:flex; justify-content:space-between; align-items:center;">
+                        What is my Student Registration Code? <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-body" style="display:none; padding:14px 16px; color:#475569; line-height:1.6; font-size:0.9rem;">
+                        Your Student Registration Code is the unique identifier assigned to you by Bulinga TSS administration. It is found on your student ID card or registration documents. Contact your class teacher if you cannot locate it.
+                    </div>
+                </div>
+
+                <div class="faq-item" style="border:1px solid #e2e8f0; border-radius:8px; margin-bottom:10px; overflow:hidden;">
+                    <button onclick="toggleFaq(this)" style="width:100%; text-align:left; padding:14px 16px; background:#f8fafc; border:none; cursor:pointer; font-weight:600; font-size:0.95rem; color:#0f172a; display:flex; justify-content:space-between; align-items:center;">
+                        Can I vote more than once? <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-body" style="display:none; padding:14px 16px; color:#475569; line-height:1.6; font-size:0.9rem;">
+                        No. Each Student Registration Code can only be used to vote once per position. The system will reject duplicate votes and display an <em>Access Denied</em> message if you attempt to vote again with the same code.
+                    </div>
+                </div>
+
+                <div class="faq-item" style="border:1px solid #e2e8f0; border-radius:8px; margin-bottom:10px; overflow:hidden;">
+                    <button onclick="toggleFaq(this)" style="width:100%; text-align:left; padding:14px 16px; background:#f8fafc; border:none; cursor:pointer; font-weight:600; font-size:0.95rem; color:#0f172a; display:flex; justify-content:space-between; align-items:center;">
+                        How do I apply to run as a candidate? <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-body" style="display:none; padding:14px 16px; color:#475569; line-height:1.6; font-size:0.9rem;">
+                        Visit the <strong>Apply Campaign</strong> page and fill in the Advertiser Candidate Application Form. Provide your name, target position, trade, and student registration code. Once submitted, your application will be reviewed by the admin and approved if eligible.
+                    </div>
+                </div>
+
+                <div class="faq-item" style="border:1px solid #e2e8f0; border-radius:8px; margin-bottom:10px; overflow:hidden;">
+                    <button onclick="toggleFaq(this)" style="width:100%; text-align:left; padding:14px 16px; background:#f8fafc; border:none; cursor:pointer; font-weight:600; font-size:0.95rem; color:#0f172a; display:flex; justify-content:space-between; align-items:center;">
+                        Where can I see the election results? <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-body" style="display:none; padding:14px 16px; color:#475569; line-height:1.6; font-size:0.9rem;">
+                        Live tallies and real-time vote counts are available on the <strong>Election Status</strong> page. Results are grouped by position and update automatically every 30 seconds during the election period.
+                    </div>
+                </div>
+
+                <div class="faq-item" style="border:1px solid #e2e8f0; border-radius:8px; margin-bottom:10px; overflow:hidden;">
+                    <button onclick="toggleFaq(this)" style="width:100%; text-align:left; padding:14px 16px; background:#f8fafc; border:none; cursor:pointer; font-weight:600; font-size:0.95rem; color:#0f172a; display:flex; justify-content:space-between; align-items:center;">
+                        I get a server error when voting. What should I do? <span class="faq-icon">▼</span>
+                    </button>
+                    <div class="faq-body" style="display:none; padding:14px 16px; color:#475569; line-height:1.6; font-size:0.9rem;">
+                        A server error usually means the backend is temporarily unavailable. Please wait a few minutes and try again. If the problem persists, report it to your system administrator or IT teacher.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Contact Section -->
+            <div style="margin-top:28px; background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:16px; text-align:center;">
+                <p style="color:#0369a1; font-weight:600; margin-bottom:6px;">Still need help?</p>
+                <p style="color:#64748b; font-size:0.875rem; margin:0;">Contact your school IT administrator or visit the school office for in-person support during election hours.</p>
+            </div>
+        </div>
+        
+    </main>
+
+    <!-- Fixed Footer Roster Element -->
+    <footer class="footer">
+        <p>© 2026 BTSS Voting System. All Rights Reserved.</p>
+    </footer>
+
+</div>
+
+<script>
+function toggleFaq(btn) {
+    const body = btn.nextElementSibling;
+    const icon = btn.querySelector('.faq-icon');
+    const isOpen = body.style.display === 'block';
+    body.style.display = isOpen ? 'none' : 'block';
+    icon.textContent = isOpen ? '▼' : '▲';
+    btn.style.background = isOpen ? '#f8fafc' : '#eff6ff';
+}
+</script>
+   
+</body>
+</html>

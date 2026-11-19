@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulinga tss voting system</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Device Centering Layout System */
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            background-color: #f1f5f9; /* Soft background color for the device edges */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: system-ui, -apple-system, sans-serif;
+            box-sizing: border-box;
+        }
+
+        /* The Main Wrapper filling the center area */
+        .site-wrapper {
+            width: 100%;
+            max-width: 1200px; /* Limits maximum width on ultra-wide screens */
+            min-height: 90vh; /* Keeps layout breathing room at top and bottom */
+            background-color: #ffffff; /* Clean white canvas for content */
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 2rem 1rem;
+        }
+
+        /* Navigation Bar Components Layout */
+        .navbar {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 1rem 2rem;
+            list-style-type: none;
+        }
+        .nav-links a.active {
+    border-bottom: 2px solid #0ea5e9;
+    color: #0ea5e9;
+}
+
+
+        .nav-container {
+            list-style-type: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .nav-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .logo-wrapper h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            list-style-type: none;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            list-style-type: none;
+            color: #ffffff;
+        }
+
+        /* Workspace Grid & Central Containers */
+        .main-container {
+            flex: 1; /* Pushes footer down to fill container height */
+            padding: 2.5rem;
+            box-sizing: border-box;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero-section h2 {
+            font-size: 2rem;
+            color: #1e293b;
+            margin: 0 0 0.75rem 0;
+        }
+
+        .hero-section p {
+            color: #64748b;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Dashboard Grid Column Systems */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .info-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.75rem;
+            position: relative;
+        }
+
+        .info-card.Highlight {
+            border-color: #3b82f6;
+            background-color: #f0fdf4;
+        }
+
+        .info-card h3 {
+            margin: 0 0 1rem 0;
+            color: #0f172a;
+        }
+
+        .badge {
+            position: absolute;
+            top: 1.75rem;
+            right: 1.75rem;
+            background-color: #22c55e;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        .info-card p {
+            color: #475569;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Interactive Action Buttons styling */
+        .btn {
+            display: inline-block;
+            padding: 0.625rem 1.25rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-secondary {
+            background-color: #475569;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #334155;
+        }
+
+        /* Voting Metric Statistics Panel styling */
+        .stats-section {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.75rem;
+        }
+
+        .stats-section h3 {
+            margin: 0 0 1.5rem 0;
+            color: #0f172a;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 1.25rem;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2563eb;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Footer Hub Layout */
+        .footer {
+            background-color: #0f172a;
+            color: #64748b;
+            text-align: center;
+            padding: 1.25rem;
+            font-size: 0.875rem;
+            border-top: 1px solid #1e293b;
+        }
+
+        .footer p {
+            margin: 0;
+        }
+
+        /* Responsive Breakpoints Rules */
+        @media (max-width: 768px) {
+            html, body {
+                align-items: flex-start;
+            }
+            .site-wrapper {
+                margin: 0;
+                border-radius: 0;
+                min-height: 100vh;
+            }
+            .nav-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .nav-links {
+                flex-direction: column;
+                gap: 0.75rem;
+                width: 100%;
+            }
+            .main-container {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    
+    <div class="site-wrapper">
+
+        
+        <nav class="navbar">
+            <div class="nav-container">
+                
+                <div class="logo-wrapper">
+                   
+                    <h1>BTSS VOTING SYSTEM</h1>
+                </div>
+                
+                <a href="home.html" class="nav-brand"></a>
+                <div class="nav-links">
+                    <a href="home.html" class="active">Home</a>
+                    <a href="advertiser.html">Apply Campaign</a>
+                    <a href="election.html">Vote Now</a>
+                    <a href="status.html">Election Status</a>
+                    <a href="helpcenter.html">Helpcenter</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- WORKSPACE AREA CONTENT MODULE -->
+        <div class="main-container">
+            
+            <!-- Welcome Hero Section -->
+            <header class="hero-section">
+                <h2>Welcome to Bulinga TSS Voting Portal</h2>
+                <p>Your secure, transparent, and digital platform for institutional elections. Make your voice count today.</p>
+            </header>
+
+            <!-- Dynamic Live Information Cards -->
+            <section class="dashboard-grid">
+                <div class="info-card Highlight">
+                    <h3>Active Elections</h3>
+                    <span class="badge dynamic-pulse">Live Now</span>
+                    <p>2026 Student Council Leadership Elections are currently running.</p>
+                    <a href="election.html" class="btn btn-primary">Cast Your Vote</a>
+                </div>
+
+                <div class="info-card">
+                    <h3>Campaign Application</h3>
+                    <p>Want to run for office? Submit your manifesto and register as an official candidate.</p>
+                    <a href="advertiser.html" class="btn btn-secondary">Apply Now</a>
+                </div>
+            </section>
+
+            <!-- General Election Statistics Tracking -->
+            <section class="stats-section">
+                <h3>Current Turnout Metrics</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">74%</span>
+                        <span class="stat-label">Voter Turnout</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">1,240</span>
+                        <span class="stat-label">Votes Cast</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">4h 12m</span>
+                        <span class="stat-label">Time Remaining</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- FOOTER SECTION MODULE -->
+        <footer class="footer">
+            <p>&copy; 2026 Bulinga TSS Voting System. All rights reserved. Secure and encrypted.</p>
+        </footer>
+        
+    </div>
+   
+</body>

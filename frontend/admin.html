@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureVote - Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Security gate check execution before rendering page elements
+        if (localStorage.getItem('adminSession') !== 'authenticated_token') {
+            alert("Unauthorized access attempt. Redirecting to login verification gateway.");
+            window.location.href = 'login.html';
+        }
+    </script>
+    <style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#f3f4f6;
+    color:#1f2937;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+    background:#0f172a;
+    color:white;
+    padding:1rem 2rem;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.nav-container{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:1rem;
+}
+
+.nav-brand{
+    color:white;
+    text-decoration:none;
+    font-size:1.3rem;
+    font-weight:bold;
+}
+
+.nav-links{
+    display:flex;
+    gap:1rem;
+}
+
+.nav-links a{
+    color:#cbd5e1;
+    text-decoration:none;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+    color:white;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:260px;
+    height:100%;
+    background:#1e3a8a;
+    padding-top:20px;
+    overflow-y:auto;
+    box-shadow:4px 0 15px rgba(0,0,0,0.2);
+    z-index:1000;
+}
+
+.sidebar-logo{
+    text-align:center;
+    color:white;
+    margin-bottom:30px;
+}
+
+.sidebar-logo h2{
+    font-size:28px;
+}
+
+.sidebar-menu{
+    list-style:none;
+    padding:0;
+}
+
+.sidebar-menu li{
+    margin:10px;
+}
+
+.sidebar-menu a{
+    display:block;
+    color:white;
+    text-decoration:none;
+    padding:14px 18px;
+    border-radius:10px;
+    font-weight:bold;
+    transition:0.3s;
+    background:rgba(255,255,255,0.06);
+}
+
+.sidebar-menu a:hover{
+    background:#2563eb;
+    transform:translateX(5px);
+}
+
+.sidebar-menu a.active{
+    background:#2563eb;
+    border-left:5px solid #93c5fd;
+}
+
+/* ================= MAIN ================= */
+
+.dashboard-content{
+    margin-left:260px;
+}
+
+.main-container{
+    padding:2rem;
+}
+
+/* ================= CARDS ================= */
+
+.card{
+    background:white;
+    border-radius:12px;
+    padding:1.5rem;
+    margin-bottom:2rem;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* ================= TITLES ================= */
+
+.section-title{
+    margin-bottom:1.5rem;
+    color:#1e3a8a;
+    border-bottom:3px solid #2563eb;
+    padding-bottom:10px;
+}
+
+/* ================= TABLE ================= */
+
+.data-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:1rem;
+}
+
+.data-table th{
+    background:#2563eb;
+    color:white;
+    padding:14px;
+    text-align:left;
+}
+
+.data-table td{
+    border:1px solid #e5e7eb;
+    padding:14px;
+}
+
+.data-table tr:hover{
+    background:#f9fafb;
+}
+
+/* ================= BADGES ================= */
+
+.badge{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+    text-transform:uppercase;
+}
+
+.badge-blue{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.badge-amber{
+    background:#fef3c7;
+    color:#d97706;
+}
+
+/* ================= BUTTONS ================= */
+
+.btn{
+    border:none;
+    border-radius:8px;
+    padding:10px 16px;
+    cursor:pointer;
+    font-weight:bold;
+    transition:0.3s;
+}
+
+.btn-primary{
+    background:#2563eb;
+    color:white;
+}
+
+.btn-primary:hover{
+    background:#1d4ed8;
+}
+
+.btn-success{
+    background:#16a34a;
+    color:white;
+}
+
+.btn-success:hover{
+    background:#15803d;
+}
+
+.btn-danger{
+    background:#dc2626;
+    color:white;
+}
+
+.btn-danger:hover{
+    background:#b91c1c;
+}
+
+.btn-sm{
+    padding:8px 12px;
+    font-size:13px;
+}
+
+/* ================= FORM ================= */
+
+.form-group{
+    margin-bottom:1rem;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:6px;
+    font-weight:600;
+}
+
+.form-control{
+    width:100%;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:8px;
+    font-size:15px;
+}
+
+.form-control:focus{
+    outline:none;
+    border-color:#2563eb;
+    box-shadow:0 0 0 3px rgba(37,99,235,0.2);
+}
+
+/* ================= GRID ================= */
+
+.admin-layout{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:2rem;
+}
+
+/* ================= MODAL ================= */
+
+#edit-modal{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    z-index:9999;
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-box{
+    background:white;
+    width:100%;
+    max-width:450px;
+    padding:2rem;
+    border-radius:12px;
+    box-shadow:0 20px 40px rgba(0,0,0,0.3);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:900px){
+
+    .sidebar{
+        width:100%;
+        height:auto;
+        position:relative;
+    }
+
+    .dashboard-content{
+        margin-left:0;
+    }
+
+    .admin-layout{
+        grid-template-columns:1fr;
+    }
+
+    .nav-container{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+
+</style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="admin.html" class="nav-brand"><b>SecureVote Admin Management</b> </a>
+            <div class="nav-links">
+                <a href="#" onclick="adminLogout()" style="color: #fca5a5;">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        
+        
+        <h2 class="section-title"><b>Review Inbound Campaign Applications</b></h2>
+        <div class="card">
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Applicant</th>
+                        <th>Position </th>
+                        <th>Trade</th>
+                        <th>Student Code</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="applications-table-body">
+                  
+                </tbody>
+            </table>
+        </div>
+
+        
+        <h2 class="section-title"><b>Manage Live Candidates</b></h2>
+        <div class="admin-layout">
+            
+            
+            <div class="card">
+                <h3 style="margin-top:0;">Candidate Creation</h3><br><br>
+                <form id="manual-candidate-form">
+                    <div class="form-group">
+                        <label>Candidate Full Name</label>
+                        <input type="text" id="cand-name" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Target Position</label>
+                        <input type="text" id="cand-position" required placeholder="Candidate position" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Trade</label>
+                        <input type="text" id="cand-trade" required placeholder="Enter the candidate Trade" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Profile URL</label>
+                        <input type="url" id="cand-profile" placeholder="Enter the candidate Profile" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Publish to live candidate</button>
+                </form>
+            </div>
+
+           
+            <div class="card">
+                <h3 style="margin-top:0;">Active Candidates</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Position</th>
+                            <th>Trade </th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="candidates-table-body">
+                      
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+    const API_BASE = "http://localhost:3000/api/add";
+
+    window.onload = () => {
+        fetchCampaignApplications();
+        fetchBallotCandidates();
+    };
+
+    function adminLogout() {
+        localStorage.removeItem('adminSession');
+        window.location.href = 'login.html';
+    }
+
+   
+    async function fetchCampaignApplications() {
+    try {
+        const response = await fetch(`${API_BASE}/advertise`);
+        const apps = await response.json();
+        const tbody = document.getElementById('applications-table-body');
+
+        tbody.innerHTML = '';
+
+        const approvedCandidates = JSON.parse(
+            localStorage.getItem("approvedCandidates") || "[]"
+        );
+
+        // Only show applications that have NOT been approved yet
+        const pendingApps = apps.filter(a => !approvedCandidates.includes(a.advertised_id));
+
+        if (pendingApps.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align:center;">
+                        No pending campaign applications found.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+
+        pendingApps.forEach(a => {
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${a.candidate_name}</strong></td>
+                    <td><span class="badge badge-amber">${a.position}</span></td>
+                    <td>${a.candidate_trade}</td>
+                    <td><code>${a.student_code}</code></td>
+                    <td>
+                        <button
+                            onclick="approveApplication(
+                                '${a.candidate_name}',
+                                '${a.position}',
+                                '${a.candidate_trade}',
+                                ${a.advertised_id},
+                                this
+                            )"
+                            class="btn btn-success btn-sm">
+                            Approve
+                        </button>
+                    </td>
+                </tr>
+            `;
+        });
+
+    } catch (err) {
+        console.error(err);
+    }
+}
+async function approveApplication(name, position, trade, id, btn) {
+    try {
+
+        // 1. Add to live candidates
+        const response = await fetch(`${API_BASE}/candidates`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                candidate_name: name,
+                position: position,
+                trade: trade,
+                profile: ""
+            })
+        });
+
+        if (response.ok) {
+
+            // 2. DELETE from advertised database (IMPORTANT FIX)
+            await fetch(`${API_BASE}/advertise/${id}`, {
+                method: 'DELETE'
+            });
+
+            // 3. Save in localStorage (optional backup)
+            let approvedCandidates = JSON.parse(
+                localStorage.getItem("approvedCandidates") || "[]"
+            );
+
+            if (!approvedCandidates.includes(id)) {
+                approvedCandidates.push(id);
+                localStorage.setItem(
+                    "approvedCandidates",
+                    JSON.stringify(approvedCandidates)
+                );
+            }
+
+            // 4. Remove row instantly from UI
+            const row = btn.closest('tr');
+            if (row) row.remove();
+
+            alert(`${name} approved successfully.`);
+
+            fetchBallotCandidates();
+
+        } else {
+            alert("Failed to approve application.");
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Server error.");
+    }
+}
+
+    async function fetchBallotCandidates() {
+        try {
+            const response = await fetch(`${API_BASE}/candidates`);
+            const candidates = await response.json();
+
+            const tbody = document.getElementById('candidates-table-body');
+            tbody.innerHTML = '';
+
+            if (!candidates || candidates.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align:center;">
+                            No candidates available.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            candidates.forEach(c => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>
+                            <strong>${c.candidate_name}</strong>
+                           
+                        </td>
+                        <td><span class="badge badge-blue">${c.position}</span></td>
+                        <td>${c.trade}</td>
+                        <td>
+                            <button
+                                onclick="openEditModal(${c.candidate_id}, '${c.candidate_name}', '${c.position}', '${c.trade}', '${c.profile || ''}')"
+                                class="btn btn-sm"
+                                style="background:#2563eb;color:white;margin-right:4px;">
+                                Edit
+                            </button>
+                            <button
+                                onclick="deleteCandidate(${c.candidate_id})"
+                                class="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    // MANUAL CANDIDATE FORM SUBMISSION
+    document.getElementById('manual-candidate-form')
+        .addEventListener('submit', async (e) => {
+
+        e.preventDefault();
+
+        const payload = {
+            candidate_name: document.getElementById('cand-name').value,
+            position: document.getElementById('cand-position').value,
+            trade: document.getElementById('cand-trade').value,
+            profile: document.getElementById('cand-profile').value || ""
+        };
+
+        try {
+            const response = await fetch(`${API_BASE}/candidates`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                alert("Candidate added successfully!");
+                document.getElementById('manual-candidate-form').reset();
+                fetchBallotCandidates();
+            } else {
+                alert("Failed to add candidate.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Server connection error.");
+        }
+    });
+
+    // DELETE CANDIDATE
+    async function deleteCandidate(candidate_Id) {
+
+        const confirmDelete = confirm(
+            "Are you sure you want to remove this candidate?"
+        );
+
+        if (!confirmDelete) return;
+
+        try {
+            const response = await fetch(
+                `${API_BASE}/candidates/${candidate_Id}`,
+                {
+                    method: 'DELETE'
+                }
+            );
+
+            if (response.ok) {
+                alert("Candidate removed successfully.");
+                fetchBallotCandidates();
+            } else {
+                alert("Failed to delete candidate.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Server error while deleting candidate.");
+        }
+    }
+    // EDIT CANDIDATE - Open modal
+    function openEditModal(id, name, position, trade, profile) {
+        document.getElementById('edit-cand-id').value = id;
+        document.getElementById('edit-cand-name').value = name;
+        document.getElementById('edit-cand-position').value = position;
+        document.getElementById('edit-cand-trade').value = trade;
+        document.getElementById('edit-cand-profile').value = profile || '';
+        document.getElementById('edit-modal').style.display = 'flex';
+    }
+
+    function closeEditModal() {
+        document.getElementById('edit-modal').style.display = 'none';
+    }
+
+    async function saveEditCandidate() {
+        const id = document.getElementById('edit-cand-id').value;
+        const payload = {
+            candidate_name: document.getElementById('edit-cand-name').value,
+            position: document.getElementById('edit-cand-position').value,
+            trade: document.getElementById('edit-cand-trade').value,
+            profile: document.getElementById('edit-cand-profile').value || ''
+        };
+
+        try {
+            const response = await fetch(`${API_BASE}/candidates/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                alert("Candidate updated successfully!");
+                closeEditModal();
+                fetchBallotCandidates();
+            } else {
+                alert("Failed to update candidate.");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Server connection error.");
+        }
+    }
+</script>
+
+<!-- EDIT CANDIDATE MODAL -->
+<div id="edit-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:white; border-radius:10px; padding:2rem; width:100%; max-width:460px; box-shadow:0 20px 40px rgba(0,0,0,0.3);">
+        <h3 style="margin-top:0; color:#1e3a8a;">Edit Candidate Profile</h3>
+        <input type="hidden" id="edit-cand-id">
+        <div class="form-group">
+            <label>Candidate Full Name</label>
+            <input type="text" id="edit-cand-name" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Target Position</label>
+            <input type="text" id="edit-cand-position" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Trade</label>
+            <input type="text" id="edit-cand-trade" class="form-control">
+        </div>
+        <div class="form-group">
+            <label>Profile Image URL</label>
+            <input type="url" id="edit-cand-profile" class="form-control" placeholder="https://...">
+        </div>
+        <div style="display:flex; gap:0.75rem; margin-top:1.25rem;">
+            <button onclick="saveEditCandidate()" class="btn btn-success" style="flex:1;">Save Changes</button>
+            <button onclick="closeEditModal()" class="btn" style="flex:1; background:#6b7280; color:white;">Cancel</button>
+        </div>
+    </div>
+</div>
+
+</html>

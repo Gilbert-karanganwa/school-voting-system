@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureVote - Admin Authentication</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Specific centering styling for the login screen layout */
+        .login-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #f3f4f6;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+        .login-header {
+            text-align: center;
+            color: #1e3a8a;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+        .error-banner {
+            background-color: #fee2e2;
+            border: 1px solid #fca5a5;
+            color: #991b1b;
+            padding: 0.75rem;
+            border-radius: 0.25rem;
+            margin-bottom: 1rem;
+            font-size: 0.85rem;
+            text-align: center;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-wrapper">
+        <div class="card login-card">
+            <h2 class="login-header">Admin Login</h2>
+            
+            
+            <div id="error-message" class="error-banner"></div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Admin Username</label>
+                    <input type="text" id="username" required autocomplete="username" class="form-control" placeholder="Type account username...">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label for="password">Admin Password</label>
+                    <input type="password" id="password" required autocomplete="current-password" class="form-control" placeholder="Type secret access key...">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Authenticate</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const userField = document.getElementById('username').value.trim();
+            const passField = document.getElementById('password').value;
+            const errorBox = document.getElementById('error-message');
+
+            // Secure Portal Access Credentials
+            const VALID_USER = "admin";
+            const VALID_PASS = "secure1234";
+
+            if (userField === VALID_USER && passField === VALID_PASS) {
+                // Clear any leftover message and save access session token
+                errorBox.style.display = "none";
+                localStorage.setItem('adminSession', 'authenticated_token');
+                
+                // Jump cleanly straight into your admin portal
+                window.location.href = 'admin.html';
+            } else {
+                // Display explicit feedback without using messy alert alerts
+                errorBox.innerText = "❌ Access Denied: Invalid username or security password.";
+                errorBox.style.display = "block";
+                document.getElementById('password').value = ""; // Flush the failed password field
+            }
+        });
+    </script>
+</body>
+</html>

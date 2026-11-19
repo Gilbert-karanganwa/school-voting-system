@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulinga tss voting system</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="footer.css">
+    <!-- FontAwesome stylesheet is linked to display your footer social icons correctly -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <style>
+     
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            background-color: #f1f5f9; /* Outer frame device canvas shade color */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: system-ui, -apple-system, sans-serif;
+            box-sizing: border-box;
+        }
+        .nav-links a.active {
+    border-bottom: 2px solid #0ea5e9;
+    color: #0ea5e9;
+}
+
+
+        /* The Main Wrapper filling the center area */
+        .site-wrapper {
+            width: 100%;
+            max-width: 1200px; /* Limits maximum width on ultra-wide screens */
+            min-height: 90vh; /* Keeps layout breathing room at top and bottom */
+            background-color: #ffffff; /* Inner dashboard panel backplate color */
+            display: flex;
+            flex-direction: column;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin: 2rem 1rem;
+        }
+
+        /* Navigation Bar Components Layout */
+        .navbar {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 1rem 2rem;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .nav-container h1 {
+            margin: 0;
+            font-size: 1.25rem;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+        /* Central Form Card Container Layout */
+        .main-container {
+            flex: 1; /* Pushes footer down to fill container height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem 1.5rem;
+            box-sizing: border-box;
+            background-color: #fafafa;
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            width: 100%;
+        }
+
+        /* Input Form Group Elements Layout */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #334155;
+            text-transform: capitalize;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.65rem 0.85rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #1d4ed8;
+            box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15);
+        }
+
+        /* Submit Button Component Layout */
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1.25rem;
+            border-radius: 6px;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.15s;
+            margin-top: 1.5rem;
+        }
+
+        .btn-success {
+            background-color: #16a34a;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #15803d;
+        }
+
+        /* Complete Footer Layout Section */
+        .footer {
+            background-color: #0f172a;
+            color: #94a3b8;
+            padding: 3rem 2rem 1rem 2rem;
+            border-top: 1px solid #1e293b;
+        }
+
+        .footer-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .footer-section h3 {
+            color: #ffffff;
+            font-size: 1.05rem;
+            margin-top: 0;
+            margin-bottom: 1.25rem;
+            font-weight: 600;
+        }
+
+        .footer-section p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .footer-section a {
+            display: block;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-bottom: 0.6rem;
+            transition: color 0.15s;
+        }
+
+        .footer-section a:hover {
+            color: #ffffff;
+        }
+
+        /* Social Interactive Media Layout Framework */
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .social-icons a {
+            color: #94a3b8;
+            font-size: 1.25rem;
+            transition: color 0.15s, transform 0.15s;
+        }
+
+        .social-icons a:hover {
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            border-top: 1px solid #1e293b;
+            padding-top: 1.5rem;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .footer-bottom p {
+            margin: 0;
+        }
+
+        /* Layout Framework Viewport Media Breakpoints */
+        @media (max-width: 768px) {
+            html, body {
+                align-items: flex-start;
+            }
+            .site-wrapper {
+                margin: 0;
+                border-radius: 0;
+                min-height: 100vh;
+            }
+            .nav-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .nav-links {
+                flex-direction: column;
+                gap: 0.75rem;
+                width: 100%;
+            }
+            .main-container {
+                padding: 1.5rem 1rem;
+            }
+            .card {
+                padding: 1.75rem 1.25rem;
+            }
+            .footer-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CENTRAL DEVICE VIEWPORT WRAPPER -->
+    <div class="site-wrapper">
+
+        <!-- HEADER NAVIGATION PORTAL LINKS -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <h1>BTSS VOTING SYSTEM</h1>
+                <a href="home.html" class="nav-brand"></a>
+                <div class="nav-links">
+                    <a href="home.html">Home</a>
+                    <a href="advertiser.html">Apply Campaign</a>
+                    <a href="election.html">Vote Now</a>
+                    <a href="status.html">Election Status</a>
+                    <a href="helpcenter.html">Helpcenter</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- REGISTRATION ENTRY FORM CONTAINER WORKSPACE -->
+        <div class="main-container">
+            <div class="card" style="max-width: 500px;">
+                <h2 style="text-align: center; color: #1d4ed8; margin-top: 0; font-size: 1.4rem;">Advertiser Candidate Application Form</h2>
+                <form id="advertise-form">
+                    <div class="form-group">
+                        <label>candidate Name</label>
+                        <input type="text" id="adv-name" required class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Target Position</label>
+                        <input type="text" id="adv-position" required placeholder="Enter the candidate position" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Candidate Trade</label>
+                        <input type="text" id="adv-trade" required placeholder="Enter Candidate Trade" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Student Registration Code</label>
+                        <input type="text" id="adv-code" required class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-success">Submit Campaign Details</button>
+                </form>
+            </div>
+        </div>
+
+      <footer class="footer">
+        <p>© 2026 BTSS Voting System. All Rights Reserved.</p>
+    </footer>
+<script>
+const API_BASE = "http://localhost:3000/api/add"; document.getElementById('advertise-form').addEventListener('submit', async (e) => { e.preventDefault(); const payload = { candidate_name: document.getElementById('adv-name').value, position: document.getElementById('adv-position').value, candidate_trade: document.getElementById('adv-trade').value, student_code: document.getElementById('adv-code').value }; try { const response = await fetch(`${API_BASE}/advertise`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); if (response.ok) { alert("📢 Application Registered! Wait for Admin configuration validation."); document.getElementById('advertise-form').reset(); } else { alert("Failed to submit entry data details."); } } catch (error) { alert("Server infrastructure link connectivity runtime error."); } }); 
+</script>
+</html>
